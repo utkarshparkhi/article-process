@@ -1,8 +1,8 @@
 from transformers import pipeline
-import torch
 
 
 def get_sentiment(texts):
+    print("getting sentiment")
     classifier = pipeline("sentiment-analysis")
     res = classifier(texts)
     return res

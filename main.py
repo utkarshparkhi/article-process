@@ -28,9 +28,18 @@ def process(reviews):
         if 'comments' in data.keys():
             data['comments'] = int(data['comments'])
         if 'pub_date' in data.keys() and 'domain' in data.keys():
-            data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
+            if isinstance(data['pub_date'], str):
+                if data['domain'] == 'GSM':
+                    if data['pub_date'].split()[1] == "Sept":
+                        data['pub_date'] = data['pub_date'].split()
+                        data['pub_date'][1] = "September"
+                        data['pub_date'] = " ".join(data["pub_date"])
+                data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
         if 'suma1' in data.keys():
-            data.update({"sentiment": models.sentiment.get_sentiment(data['suma1'])[0]})
+            data.update({"sentiment": models.roberta_sentiment.get_positive_sentiment(data['suma1'])})
+        if 'text' in data.keys():
+            data.update({'keywords': models.keyword_extraction_pytopic.get_keywords(data['text'], 5)})
+        print(f"{data['url']} processed")
     dump_data(processed_data)
 
 

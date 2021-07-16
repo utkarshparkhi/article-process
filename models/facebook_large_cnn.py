@@ -4,10 +4,11 @@ import torch
 tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
 model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
 
+
 def get_summary(texts):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     try:
-        print(f'using {device}')
+        print(f'using {device} for summary')
         torch.cuda.empty_cache()
         model.to(device)
         torch.cuda.empty_cache()
@@ -19,7 +20,7 @@ def get_summary(texts):
         return tgt_text
     except RuntimeError:
         device = 'cpu'
-        print(f'using {device}')
+        print(f'using {device} for summary')
         model.to(device)
         batch = tokenizer(texts, truncation=True, padding='longest', return_tensors="pt").to(device)
         translated = model.generate(**batch, min_length=150, max_length=250)

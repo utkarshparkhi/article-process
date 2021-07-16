@@ -2,8 +2,6 @@ from transformers import PegasusForConditionalGeneration, PegasusTokenizer
 import torch
 
 
-
-
 def get_onel(text):
     model_name = 'google/pegasus-xsum'
     tokenizer = PegasusTokenizer.from_pretrained(model_name)
