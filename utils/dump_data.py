@@ -18,3 +18,9 @@ def insert(data):
     else:
         x = db_config.processed_col.insert_one(data)
         return x.inserted_id
+
+def dump_data1(data):
+    f = file("test_out.json","a")
+    for d in data:
+        json.dump(d,f)
+    return x

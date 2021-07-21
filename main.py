@@ -34,6 +34,16 @@ def process(reviews):
                         data['pub_date'] = data['pub_date'].split()
                         data['pub_date'][1] = "September"
                         data['pub_date'] = " ".join(data["pub_date"])
+
+                    elif data['pub_date'].split()[1] == "Oct":
+                        data['pub_date'] = data['pub_date'].split()
+                        data['pub_date'][1] = "October"
+                        data['pub_date'] = " ".join(data["pub_date"])
+
+                    elif data['pub_date'].split()[1] == "Feb":
+                        data['pub_date'] = data['pub_date'].split()
+                        data['pub_date'][1] = "February"
+                        data['pub_date'] = " ".join(data["pub_date"])
                 data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
         if 'suma1' in data.keys():
             data.update({"sentiment": models.roberta_sentiment.get_positive_sentiment(data['suma1'])})
@@ -44,4 +54,7 @@ def process(reviews):
 
 
 data = load_data()
-process(data)
+print(len(data))
+chunk_size = 10
+for i in range(0, len(data), chunk_size):
+    process(data[i:i + chunk_size])

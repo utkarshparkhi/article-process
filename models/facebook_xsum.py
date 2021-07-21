@@ -1,11 +1,10 @@
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
-tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-xsum")
-
-model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-xsum")
 
 def get_onel(texts):
+    tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-xsum")
+    model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-xsum")
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     try:
         print(f'using {device} for onel')
