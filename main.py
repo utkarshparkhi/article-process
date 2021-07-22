@@ -2,8 +2,8 @@ import datetime
 
 import models
 from utils import summarize, oneliners
-from utils.dump_data import dump_data
-from utils.load_data import load_data
+from utils.dump_data import dump_data1
+from utils.load_data import load_data1
 from constant.metrics import rating_metric, date_metric
 
 
@@ -44,17 +44,24 @@ def process(reviews):
                         data['pub_date'] = data['pub_date'].split()
                         data['pub_date'][1] = "February"
                         data['pub_date'] = " ".join(data["pub_date"])
-                data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
+
+                    elif data['pub_date'].split()[1] == "Jan":
+                        data['pub_date'] = data['pub_date'].split()
+                        data['pub_date'][1] = "January"
+                        data['pub_date'] = " ".join(data["pub_date"])
+                try:
+                    data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
+                except:
+                    pass
         if 'suma1' in data.keys():
             data.update({"sentiment": models.roberta_sentiment.get_positive_sentiment(data['suma1'])})
-        if 'text' in data.keys():
-            data.update({'keywords': models.keyword_extraction_pytopic.get_keywords(data['text'], 5)})
+        # if 'text' in data.keys():
+        #     data.update({'keywords': models.keyword_extraction_pytopic.get_keywords(data['text'], 5)})
         print(f"{data['url']} processed")
-    dump_data(processed_data)
+    dump_data1(processed_data)
 
 
-data = load_data()
-print(len(data))
-chunk_size = 10
-for i in range(0, len(data), chunk_size):
-    process(data[i:i + chunk_size])
+for data in load_data1():
+    chunk_size = 10
+    for i in range(0, len(data), chunk_size):
+        process(data[i:i + chunk_size])

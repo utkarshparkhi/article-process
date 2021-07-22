@@ -1,4 +1,6 @@
 from constant import db_config
+import json
+from bson import json_util
 
 
 def dump_data(data):
@@ -19,8 +21,10 @@ def insert(data):
         x = db_config.processed_col.insert_one(data)
         return x.inserted_id
 
+
 def dump_data1(data):
-    f = file("test_out.json","a")
+    f = open("/content/drive/MyDrive/review_out.json", "a")
     for d in data:
-        json.dump(d,f)
-    return x
+        json.dump(d, f, default=json_util.default)
+        f.write('\n')
+    return True
