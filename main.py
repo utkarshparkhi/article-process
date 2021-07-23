@@ -2,8 +2,9 @@ import datetime
 
 import models
 from utils import summarize, oneliners
-from utils.dump_data import dump_data1
-from utils.load_data import load_data1
+from utils.dump_data import dump_data
+from utils.load_data import load_data
+from utils.process_date import process_date
 from constant.metrics import rating_metric, date_metric
 
 
@@ -27,41 +28,17 @@ def process(reviews):
             data['rating'] = float(data['rating']) / rating_metric[data['domain']]
         if 'comments' in data.keys():
             data['comments'] = int(data['comments'])
-        if 'pub_date' in data.keys() and 'domain' in data.keys():
-            if isinstance(data['pub_date'], str):
-                if data['domain'] == 'GSM':
-                    if data['pub_date'].split()[1] == "Sept":
-                        data['pub_date'] = data['pub_date'].split()
-                        data['pub_date'][1] = "September"
-                        data['pub_date'] = " ".join(data["pub_date"])
-
-                    elif data['pub_date'].split()[1] == "Oct":
-                        data['pub_date'] = data['pub_date'].split()
-                        data['pub_date'][1] = "October"
-                        data['pub_date'] = " ".join(data["pub_date"])
-
-                    elif data['pub_date'].split()[1] == "Feb":
-                        data['pub_date'] = data['pub_date'].split()
-                        data['pub_date'][1] = "February"
-                        data['pub_date'] = " ".join(data["pub_date"])
-
-                    elif data['pub_date'].split()[1] == "Jan":
-                        data['pub_date'] = data['pub_date'].split()
-                        data['pub_date'][1] = "January"
-                        data['pub_date'] = " ".join(data["pub_date"])
-                try:
-                    data['pub_date'] = datetime.datetime.strptime(data['pub_date'], date_metric[data['domain']])
-                except:
-                    pass
+        if 'pub_date' in data.keys():
+            data['pub_date'] = process_date(data)
         if 'suma1' in data.keys():
             data.update({"sentiment": models.roberta_sentiment.get_positive_sentiment(data['suma1'])})
         # if 'text' in data.keys():
         #     data.update({'keywords': models.keyword_extraction_pytopic.get_keywords(data['text'], 5)})
         print(f"{data['url']} processed")
-    dump_data1(processed_data)
+    dump_data(processed_data)
 
 
-for data in load_data1():
-    chunk_size = 10
-    for i in range(0, len(data), chunk_size):
-        process(data[i:i + chunk_size])
+data =load_data()
+chunk_size = 10
+for i in range(0, len(data), chunk_size):
+    process(data[i:i + chunk_size])
