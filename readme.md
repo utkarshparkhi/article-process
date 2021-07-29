@@ -11,5 +11,9 @@
 
     ```
    
-2) run `./main.py`<br>
+2. install dependencies<br>
+   `pip install -r requirements.txt`
+   
+### Run
+   run `./main.py`<br>
    `python ./main.py`
